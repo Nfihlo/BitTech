@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Concept Quest Container (Isolated)</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 24px;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        background: #0b1220;
+        color: #e5e7eb;
+      }
+      .row {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      button {
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        background: rgba(15, 23, 42, 0.7);
+        color: #e5e7eb;
+        cursor: pointer;
+      }
+      button.primary {
+        background: rgba(59, 130, 246, 0.25);
+        border-color: rgba(59, 130, 246, 0.45);
+      }
+      .pill {
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        background: rgba(15, 23, 42, 0.5);
+      }
+      #cqBox {
+        margin-top: 16px;
+        width: 720px;
+        height: 520px;
+        max-width: 100%;
+        border-radius: 16px;
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        background: rgba(2, 6, 23, 0.6);
+        padding: 12px;
+        box-sizing: border-box;
+      }
+      #cqStatus {
+        margin-top: 16px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        border: 1px dashed rgba(148, 163, 184, 0.25);
+        background: rgba(2, 6, 23, 0.35);
+      }
+      .meta {
+        color: rgba(148, 163, 184, 0.95);
+        font-size: 13px;
+      }
+      .title {
+        font-weight: 800;
+      }
+      .controls {
+        margin-top: 16px;
+        display: grid;
+        gap: 10px;
+        justify-content: start;
+      }
+      .controls-row {
+        display: flex;
+        gap: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 style="margin: 0 0 6px 0;">Concept Quest (Isolated Container)</h1>
+    <div class="meta">This page loads the same concept_quest.js but without Django templates, to isolate frontend issues.</div>
+
+    <div class="row" style="margin-top: 16px;">
+      <div class="pill">Objective: <span id="cqObjective">—</span></div>
+      <div class="pill">Accuracy: <span id="cqAccuracy">—</span></div>
+      <div class="pill">Streak: <span id="cqStreak">—</span></div>
+    </div>
+    <div class="meta" id="cqObjectiveMeta" style="margin-top: 10px;">—</div>
+
+    <div class="row" style="margin-top: 14px;">
+      <button class="primary" type="button" id="cqStart">Start</button>
+      <button type="button" id="cqPause">Pause</button>
+      <button type="button" id="cqRestart">Restart</button>
+      <button type="button" id="cqToggleVisual">Visual: On</button>
+      <button type="button" id="cqToggleAudio">Audio: On</button>
+      <button type="button" id="cqToggleKinesthetic">Kinesthetic: On</button>
+    </div>
+
+    <div id="cqBox" data-box-width="720" data-box-height="520" data-event-url=""></div>
+
+    <div class="controls" aria-label="On-screen controls">
+      <div><button type="button" class="arcade-btn" data-dir="up">Up</button></div>
+      <div class="controls-row">
+        <button type="button" class="arcade-btn" data-dir="left">Left</button>
+        <button type="button" class="arcade-btn" data-dir="down">Down</button>
+        <button type="button" class="arcade-btn" data-dir="right">Right</button>
+      </div>
+    </div>
+
+    <div id="cqStatus">
+      <div class="title dash-item-title">Ready</div>
+      <div class="meta dash-item-meta">If the game loads correctly, it will auto-start in ~0.25s.</div>
+      <div class="pill dash-pill" style="display: inline-block; margin-top: 10px;">Learn</div>
+    </div>
+
+    <div style="margin-top: 16px;">
+      <div class="title">Immediate Feedback</div>
+      <div class="meta" id="cqFeedbackMeta">—</div>
+      <div class="pill" id="cqFeedbackPill" style="display: inline-block; margin-top: 10px;">OK</div>
+    </div>
+
+    <script id="conceptQuestSpec" type="application/json">
+      {
+        "version": 1,
+        "title": "Recursion (Sample)",
+        "objectives": [
+          {"id": "obj1", "text": "Define recursion and identify a base case.", "difficulty": 2},
+          {"id": "obj2", "text": "Trace a simple recursive call stack.", "difficulty": 3},
+          {"id": "obj3", "text": "Spot common recursion misconceptions.", "difficulty": 3}
+        ],
+        "terms": [
+          {"term": "base case", "definition": "A stopping condition that prevents infinite recursion.", "objective_id": "obj1", "kind": "core"},
+          {"term": "self-call", "definition": "When a function calls itself with smaller input.", "objective_id": "obj1", "kind": "core"},
+          {"term": "stack frame", "definition": "A record for one function call on the call stack.", "objective_id": "obj2", "kind": "core"},
+          {"term": "unwinding", "definition": "Returning from recursive calls back up the stack.", "objective_id": "obj2", "kind": "core"},
+          {"term": "no base case needed", "definition": "Recursion works fine without a stopping condition.", "objective_id": "obj3", "kind": "misconception"},
+          {"term": "always faster than loops", "definition": "Recursion is always faster than iterative solutions.", "objective_id": "obj3", "kind": "misconception"},
+          {"term": "divide and conquer", "definition": "Solve a problem by splitting it into smaller problems.", "objective_id": "obj2", "kind": "core"},
+          {"term": "factorial", "definition": "A classic example often implemented using recursion.", "objective_id": "obj1", "kind": "core"}
+        ],
+        "settings": {"difficulty": 2, "styles": {"visual": true, "auditory": true, "kinesthetic": true}}
+      }
+    </script>
+    <script src="../static/js/concept_quest.js" defer></script>
+    <script>
+      window.setTimeout(() => {
+        const loaded = window.__bittech_conceptQuestLoaded === true;
+        if (loaded) return;
+        const titleEl = document.querySelector("#cqStatus .dash-item-title");
+        const metaEl = document.querySelector("#cqStatus .dash-item-meta");
+        const pillEl = document.querySelector("#cqStatus .dash-pill");
+        if (titleEl) titleEl.textContent = "Game did not load";
+        if (metaEl) metaEl.textContent = "Check that ../static/js/concept_quest.js is reachable from this HTML file location.";
+        if (pillEl) pillEl.textContent = "Error";
+      }, 1200);
+    </script>
+  </body>
+</html>
+
