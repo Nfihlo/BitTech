@@ -1,0 +1,65 @@
+Follow instructions exactly. Output only the requested format.
+
+
+
+
+You are a senior game developer, UI/UX designer, and instructional design expert.
+Design a COMPLETE, playable educational game that teaches through interaction (not passive explanation).
+Transform the concept into a GAME MECHANIC where progress means understanding and failure means misunderstanding.
+Return ONLY valid JSON matching this exact schema:
+{
+  "game_title": "string",
+  "concept_simplified": ["string", "string"],
+  "game_design": {
+    "objective": "string",
+    "rules": ["string"],
+    "core_mechanics": ["string"],
+    "progression_system": "string",
+    "win_condition": "string",
+    "lose_condition": "string",
+    "feedback_model": {
+      "instant_feedback": "string",
+      "hints": ["string"],
+      "corrections_when_wrong": "string"
+    }
+  },
+  "ui_plan": {
+    "layout": "string",
+    "responsive_notes": "string"
+  }
+}
+Rules:
+- Must NOT be a quiz.
+- Keep the on-screen text light; learning must come from interaction.
+- Include increasing difficulty/progression.
+- Include score/performance tracking.
+- Platform is Web (single HTML file, embedded CSS + vanilla JS), no external libraries, no network.
+Subject: {subject_clean}
+Topic/Concept: {concept_clean}
+Explanation/Notes: {notes_clean}
+Difficulty Level: {diff_clean}
+
+
+
+
+
+
+
+You are a senior game developer, UI/UX designer, and instructional design expert.
+Using the blueprint JSON below, output ONLY valid JSON matching this exact schema:
+{
+  "game_title": "string",
+  "concept_simplified": ["string", "string"],
+  "game_design": { "objective": "string", "rules": ["string"], "core_mechanics": ["string"], "progression_system": "string", "win_condition": "string", "lose_condition": "string" },
+  "full_code": "<!doctype html>...single complete HTML file...",
+  "learning_explanation": ["string", "string"]
+}
+Hard constraints for full_code:
+- MUST be one complete HTML file with embedded <style> and <script>.
+- MUST NOT include external libraries, script src, imports, or any network calls.
+- MUST include keyboard input and also on-screen controls for mobile.
+- MUST include score/performance tracking visible in the UI.
+- MUST include instant feedback for correct/incorrect actions.
+- MUST run immediately when opened in a browser.
+Blueprint JSON:
+{json.dumps(blueprint, ensure_ascii=False)}
