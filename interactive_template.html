@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Concept: Data Flow</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --primary: #3b82f6;
+            --success: #22c55e;
+            --error: #ef4444;
+            --text: #f8fafc;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .slots {
+            display: flex;
+            justify-content: space-around;
+            gap: 1rem;
+            min-height: 100px;
+        }
+        .slot {
+            flex: 1;
+            border: 2px dashed #475569;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+            background: rgba(255,255,255,0.05);
+        }
+        .slot.correct { border-color: var(--success); background: rgba(34, 197, 94, 0.1); }
+        .slot.wrong { border-color: var(--error); background: rgba(239, 68, 68, 0.1); }
+
+        .items {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .draggable {
+            background: var(--primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: grab;
+            user-select: none;
+            font-weight: bold;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .draggable:active { cursor: grabbing; }
+
+        .feedback {
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: bold;
+            min-height: 1.5rem;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Concept Flow: Sorting Algorithm</h1>
+            <p>Drag the steps into the correct order to complete the "Bubble Sort" pass.</p>
+        </div>
+
+        <div class="game-area">
+            <div class="slots" id="slots">
+                <div class="slot" data-expected="1">1. ???</div>
+                <div class="slot" data-expected="2">2. ???</div>
+                <div class="slot" data-expected="3">3. ???</div>
+            </div>
+
+            <div class="items" id="items">
+                <div class="draggable" draggable="true" data-step="2">Compare Adjacent</div>
+                <div class="draggable" draggable="true" data-step="1">Start at index 0</div>
+                <div class="draggable" draggable="true" data-step="3">Swap if needed</div>
+            </div>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+
+        <div class="stats">
+            <div>Score: <span id="score">0</span></div>
+            <div>Attempts: <span id="attempts">0</span></div>
+        </div>
+    </div>
+
+    <script>
+        const draggables = document.querySelectorAll('.draggable');
+        const slots = document.querySelectorAll('.slot');
+        const feedback = document.getElementById('feedback');
+        const scoreEl = document.getElementById('score');
+        const attemptsEl = document.getElementById('attempts');
+
+        let score = 0;
+        let attempts = 0;
+        let correctPlacements = 0;
+
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => {
+                draggable.classList.add('dragging');
+            });
+
+            draggable.addEventListener('dragend', () => {
+                draggable.classList.remove('dragging');
+            });
+        });
+
+        slots.forEach(slot => {
+            slot.addEventListener('dragover', e => {
+                e.preventDefault();
+            });
+
+            slot.addEventListener('drop', e => {
+                const dragging = document.querySelector('.dragging');
+                if (!dragging) return;
+
+                attempts++;
+                attemptsEl.textContent = attempts;
+
+                const step = dragging.getAttribute('data-step');
+                const expected = slot.getAttribute('data-expected');
+
+                if (step === expected) {
+                    slot.textContent = dragging.textContent;
+                    slot.classList.add('correct');
+                    slot.classList.remove('wrong');
+                    dragging.style.display = 'none';
+                    feedback.textContent = "Correct!";
+                    feedback.style.color = "var(--success)";
+                    score += 10;
+                    correctPlacements++;
+                    if (correctPlacements === slots.length) {
+                        feedback.textContent = "Great job! You've mastered the sequence!";
+                    }
+                } else {
+                    slot.classList.add('wrong');
+                    feedback.textContent = "Not quite. Try another spot.";
+                    feedback.style.color = "var(--error)";
+                    score = Math.max(0, score - 2);
+                }
+                scoreEl.textContent = score;
+            });
+        });
+    </script>
+</body>
+</html>

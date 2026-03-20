@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitTech Game Generator</title>
+    <style>
+        :root {
+            --bg: #0b1220;
+            --card: #1e293b;
+            --primary: #3b82f6;
+            --secondary: #10b981;
+            --text: #e5e7eb;
+            --input-bg: #0f172a;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .form-card {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #475569;
+            background: var(--input-bg);
+            color: var(--text);
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        button:hover { opacity: 0.9; }
+
+        .output-section {
+            margin-top: 2rem;
+            display: none;
+        }
+        .prompt-preview {
+            background: #000;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            margin-top: 1rem;
+            border: 1px solid #334155;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--primary);
+            font-size: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            width: auto;
+        }
+        .stages {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        @media (max-width: 768px) {
+            .stages { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 BitTech Game Generator</h1>
+            <p>Turn complex concepts into interactive games in two stages.</p>
+        </header>
+
+        <div class="stages">
+            <!-- Stage 1: Blueprint -->
+            <div class="form-card">
+                <h2>Stage 1: Generate Blueprint</h2>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" value="Computer Science">
+                </div>
+                <div class="form-group">
+                    <label for="topic">Topic / Concept</label>
+                    <input type="text" id="topic" placeholder="e.g. Recursion">
+                </div>
+                <div class="form-group">
+                    <label for="notes">Explanation / Notes</label>
+                    <textarea id="notes" rows="3" placeholder="A brief explanation..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="difficulty">Difficulty Level</label>
+                    <select id="difficulty">
+                        <option>Beginner</option>
+                        <option selected>Intermediate</option>
+                        <option>Advanced</option>
+                    </select>
+                </div>
+                <button id="stage1Btn">Build Stage 1 Prompt</button>
+            </div>
+
+            <!-- Stage 2: Full Code -->
+            <div class="form-card">
+                <h2>Stage 2: Generate Full Code</h2>
+                <p>Paste the JSON Blueprint returned from the LLM here.</p>
+                <div class="form-group">
+                    <label for="blueprintJson">Blueprint JSON</label>
+                    <textarea id="blueprintJson" rows="10" placeholder='{ "game_title": "...", "game_design": { ... } }'></textarea>
+                </div>
+                <button id="stage2Btn" style="background: var(--secondary);">Build Stage 2 Prompt</button>
+            </div>
+        </div>
+
+        <div class="output-section" id="outputSection">
+            <h2 id="outputTitle">Stage 1: AI Prompt Ready</h2>
+            <p id="outputDesc">Copy this prompt into your preferred LLM to get the Game Blueprint JSON.</p>
+            <div class="prompt-preview" id="promptOutput">
+                <button class="copy-btn" id="copyBtn">Copy</button>
+                <span id="promptText"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const stage1Btn = document.getElementById('stage1Btn');
+        const stage2Btn = document.getElementById('stage2Btn');
+        const outputSection = document.getElementById('outputSection');
+        const outputTitle = document.getElementById('outputTitle');
+        const outputDesc = document.getElementById('outputDesc');
+        const promptText = document.getElementById('promptText');
+        const copyBtn = document.getElementById('copyBtn');
+
+        const STAGE1_TEMPLATE = `You are a senior game developer, UI/UX designer, and instructional design expert.
+Design a COMPLETE, playable educational game that teaches through interaction (not passive explanation).
+Transform the concept into a GAME MECHANIC where progress means understanding and failure means misunderstanding.
+Return ONLY valid JSON matching this exact schema:
+{
+  "game_title": "string",
+  "concept_simplified": ["string", "string"],
+  "game_design": {
+    "objective": "string",
+    "rules": ["string"],
+    "core_mechanics": ["string"],
+    "progression_system": "string",
+    "win_condition": "string",
+    "lose_condition": "string",
+    "feedback_model": {
+      "instant_feedback": "string",
+      "hints": ["string"],
+      "corrections_when_wrong": "string"
+    }
+  },
+  "ui_plan": {
+    "layout": "string",
+    "responsive_notes": "string"
+  }
+}
+Rules:
+- Must NOT be a quiz.
+- Keep the on-screen text light; learning must come from interaction.
+- Include increasing difficulty/progression.
+- Include score/performance tracking.
+- Platform is Web (single HTML file, embedded CSS + vanilla JS), no external libraries, no network.
+
+Subject: {subject}
+Topic/Concept: {topic}
+Explanation/Notes: {notes}
+Difficulty Level: {difficulty}`;
+
+        const STAGE2_TEMPLATE = `You are a senior game developer, UI/UX designer, and instructional design expert.
+Using the blueprint JSON below, output ONLY valid JSON matching this exact schema:
+{
+  "game_title": "string",
+  "concept_simplified": ["string", "string"],
+  "game_design": { "objective": "string", "rules": ["string"], "core_mechanics": ["string"], "progression_system": "string", "win_condition": "string", "lose_condition": "string" },
+  "full_code": "<!doctype html>...single complete HTML file...",
+  "learning_explanation": ["string", "string"]
+}
+Hard constraints for full_code:
+- MUST be one complete HTML file with embedded <style> and <script>.
+- MUST NOT include external libraries, script src, imports, or any network calls.
+- MUST include keyboard input and also on-screen controls for mobile.
+- MUST include score/performance tracking visible in the UI.
+- MUST include instant feedback for correct/incorrect actions.
+- MUST run immediately when opened in a browser.
+Blueprint JSON:
+{blueprint}`;
+
+        stage1Btn.addEventListener('click', () => {
+            const subject = document.getElementById('subject').value;
+            const topic = document.getElementById('topic').value;
+            const notes = document.getElementById('notes').value;
+            const difficulty = document.getElementById('difficulty').value;
+
+            if (!topic) { alert('Please enter a topic'); return; }
+
+            const prompt = STAGE1_TEMPLATE.replace('{subject}', subject)
+                                          .replace('{topic}', topic)
+                                          .replace('{notes}', notes)
+                                          .replace('{difficulty}', difficulty);
+
+            outputTitle.textContent = "Stage 1: AI Prompt Ready";
+            outputDesc.textContent = "Copy this prompt into your preferred LLM to get the Game Blueprint JSON.";
+            promptText.textContent = prompt;
+            outputSection.style.display = 'block';
+            outputSection.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        stage2Btn.addEventListener('click', () => {
+            const blueprint = document.getElementById('blueprintJson').value;
+
+            if (!blueprint) { alert('Please paste the Blueprint JSON'); return; }
+
+            const prompt = STAGE2_TEMPLATE.replace('{blueprint}', blueprint);
+
+            outputTitle.textContent = "Stage 2: AI Prompt Ready";
+            outputDesc.textContent = "Copy this prompt into your preferred LLM to get the final playable HTML code.";
+            promptText.textContent = prompt;
+            outputSection.style.display = 'block';
+            outputSection.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(promptText.textContent).then(() => {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => copyBtn.textContent = originalText, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
