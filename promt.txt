@@ -1,12 +1,173 @@
-Follow instructions exactly. Output only the requested format.
+You are a senior game developer, UI/UX designer, and instructional design expert.
+Extract the learning model from the input.
+Return ONLY valid JSON with this exact schema:
+{
+  "title": "string",
+  "difficulty_level": "Beginner|Intermediate|Advanced",
+  "learning_objectives": [
+    {"id": "obj1", "text": "string", "success_signal": "string", "failure_signal": "string"},
+    ... 3 to 7 items ...
+  ],
+  "misconceptions": [
+    {"id": "m1", "wrong_belief": "string", "correction": "string"},
+    ... 2 to 6 items ...
+  ],
+  "key_terms": [
+    {"term": "string", "definition": "string"},
+    ... 6 to 18 items ...
+  ],
+  "micro_practice": [
+    {"prompt": "string", "ideal_action": "string", "why": "string"},
+    ... 3 to 6 items ...
+  ],
+  "ui_copy": {"tagline": "string", "instructions_short": "string"}
+}
+Rules:
+- Keep text short; no essays.
+- Misconceptions must be plausible and specific.
+- Objectives must be measurable by an in-game action.
+Subject: {SUBJECT}
+Topic/Concept: {CONCEPT}
+Explanation/Notes: {NOTES}
+Difficulty Level: {DIFFICULTY}
+Platform: Web (HTML/CSS/JS) ONLY
 
 
 
 
 You are a senior game developer, UI/UX designer, and instructional design expert.
-Design a COMPLETE, playable educational game that teaches through interaction (not passive explanation).
-Transform the concept into a GAME MECHANIC where progress means understanding and failure means misunderstanding.
-Return ONLY valid JSON matching this exact schema:
+Choose a game mechanic that teaches the concept by interaction (NOT a quiz).
+Map learning objectives to gameplay so progress = understanding and failure = misunderstanding.
+Return ONLY valid JSON with this exact schema:
+{
+  "genre": "string",
+  "core_loop": "string",
+  "player_actions": ["string"],
+  "mapping": [
+    {"objective_id": "obj1", "correct_action": "string", "wrong_action": "string", "instant_feedback": "string"},
+    ... one per objective ...
+  ],
+  "scoring": {"points_for_correct": 1, "penalty_for_wrong": 1, "streak_bonus_rule": "string"},
+  "difficulty_knobs": ["string"],
+  "win_condition": "string",
+  "lose_condition": "string"
+}
+Constraints:
+- Must work in a single HTML file (embedded CSS+JS).
+- Must support keyboard and on-screen controls.
+Learning model JSON:
+{PASTE_OUTPUT_OF_PROMPT_1}
+
+
+
+
+
+
+
+
+
+
+You are a senior game developer, UI/UX designer, and instructional design expert.
+Create a level/progression plan that increases difficulty and reinforces patterns.
+Return ONLY valid JSON with this exact schema:
+{
+  "levels": [
+    {"id": "L1", "name": "string", "goal": "string", "speed_ms": 150, "new_twist": "string", "distractor_intensity": 1},
+    ... 3 to 8 items ...
+  ],
+  "progression_system": "string",
+  "hint_schedule": {"when": "string", "how": "string"},
+  "recovery_rule_after_failure": "string"
+}
+Constraints:
+- Player should learn by repetition with variation.
+- Difficulty knobs must come from the mechanic.
+Mechanic JSON:
+{PASTE_OUTPUT_OF_PROMPT_2}
+
+
+
+
+
+
+
+You are a senior game developer, UI/UX designer, and instructional design expert.
+Create a level/progression plan that increases difficulty and reinforces patterns.
+Return ONLY valid JSON with this exact schema:
+{
+  "levels": [
+    {"id": "L1", "name": "string", "goal": "string", "speed_ms": 150, "new_twist": "string", "distractor_intensity": 1},
+    ... 3 to 8 items ...
+  ],
+  "progression_system": "string",
+  "hint_schedule": {"when": "string", "how": "string"},
+  "recovery_rule_after_failure": "string"
+}
+Constraints:
+- Player should learn by repetition with variation.
+- Difficulty knobs must come from the mechanic.
+Mechanic JSON:
+{PASTE_OUTPUT_OF_PROMPT_2}
+
+
+
+
+You are a senior game developer, UI/UX designer, and instructional design expert.
+Design the UI/UX plan for a clean responsive web game.
+Return ONLY valid JSON with this exact schema:
+{
+  "layout": {"sections": ["string"], "hud_items": ["string"], "feedback_area": "string"},
+  "responsive_notes": "string",
+  "visual_style": {"bg": "string", "primary": "string", "danger": "string", "success": "string"},
+  "micro_interactions": ["string"],
+  "accessibility": {"keyboard": true, "touch": true, "reduced_motion_notes": "string"}
+}
+Constraints:
+- Keep layout minimal and readable.
+- Instant feedback must be visible.
+Mechanic JSON:
+{PASTE_OUTPUT_OF_PROMPT_2}
+
+
+You are a senior game developer, UI/UX designer, and instructional design expert.
+Create an implementation contract so the code is reliable.
+Return ONLY valid JSON with this exact schema:
+{
+  "dom_ids": {
+    "container": "gameBox",
+    "start": "gameStart",
+    "pause": "gamePause",
+    "restart": "gameRestart",
+    "score": "gameScore",
+    "status_title": "gameStatusTitle",
+    "status_meta": "gameStatusMeta",
+    "status_pill": "gameStatusPill"
+  },
+  "controls": {"keyboard": ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"], "touch_buttons_class": "arcade-btn"},
+  "state_machine": {"states": ["idle", "playing", "paused", "gameover"], "transitions": ["string"]},
+  "data_structures": ["string"],
+  "functions": [
+    {"name": "init", "purpose": "string"},
+    {"name": "start", "purpose": "string"},
+    {"name": "pause", "purpose": "string"},
+    {"name": "reset", "purpose": "string"},
+    {"name": "tick", "purpose": "string"},
+    {"name": "render", "purpose": "string"}
+  ],
+  "persistence": {"local_storage_keys": ["string"], "what_to_store": "string"}
+}
+Constraints:
+- Use only vanilla JS.
+- Must run immediately in browser.
+UI plan JSON:
+{PASTE_OUTPUT_OF_PROMPT_4}
+Progression JSON:
+{PASTE_OUTPUT_OF_PROMPT_3}
+
+
+You are a senior game developer, UI/UX designer, and instructional design expert.
+Generate the FINAL deliverable.
+Return ONLY valid JSON with this exact schema:
 {
   "game_title": "string",
   "concept_simplified": ["string", "string"],
@@ -16,50 +177,43 @@ Return ONLY valid JSON matching this exact schema:
     "core_mechanics": ["string"],
     "progression_system": "string",
     "win_condition": "string",
-    "lose_condition": "string",
-    "feedback_model": {
-      "instant_feedback": "string",
-      "hints": ["string"],
-      "corrections_when_wrong": "string"
-    }
+    "lose_condition": "string"
   },
-  "ui_plan": {
-    "layout": "string",
-    "responsive_notes": "string"
-  }
+  "full_code": "<!doctype html>...single complete HTML file with embedded CSS and JS...",
+  "learning_explanation": ["string", "string"]
 }
-Rules:
-- Must NOT be a quiz.
-- Keep the on-screen text light; learning must come from interaction.
-- Include increasing difficulty/progression.
-- Include score/performance tracking.
-- Platform is Web (single HTML file, embedded CSS + vanilla JS), no external libraries, no network.
-Subject: {subject_clean}
-Topic/Concept: {concept_clean}
-Explanation/Notes: {notes_clean}
-Difficulty Level: {diff_clean}
-
-
-
+Hard constraints for full_code:
+- One complete HTML file.
+- No external libraries.
+- No script src.
+- No network calls.
+- Must include embedded <style> and <script>.
+- Must include keyboard input AND on-screen buttons (class from the contract).
+- Must show score/performance tracking in the UI.
+- Must show instant feedback on correct/incorrect actions.
+- Must run immediately when opened.
+Layered JSON inputs:
+{PASTE_JSON_OBJECT_WITH_KEYS_layer1_layer2_layer3_layer4_layer5}
 
 
 
 
 You are a senior game developer, UI/UX designer, and instructional design expert.
-Using the blueprint JSON below, output ONLY valid JSON matching this exact schema:
+Audit the generated output for reliability and constraint compliance.
+If anything violates constraints or would break when opened in a browser, fix it.
+Return ONLY valid JSON matching this exact schema:
 {
   "game_title": "string",
   "concept_simplified": ["string", "string"],
   "game_design": { "objective": "string", "rules": ["string"], "core_mechanics": ["string"], "progression_system": "string", "win_condition": "string", "lose_condition": "string" },
   "full_code": "<!doctype html>...single complete HTML file...",
-  "learning_explanation": ["string", "string"]
+  "learning_explanation": ["string", "string"],
+  "audit_notes": ["string"]
 }
-Hard constraints for full_code:
-- MUST be one complete HTML file with embedded <style> and <script>.
-- MUST NOT include external libraries, script src, imports, or any network calls.
-- MUST include keyboard input and also on-screen controls for mobile.
-- MUST include score/performance tracking visible in the UI.
-- MUST include instant feedback for correct/incorrect actions.
-- MUST run immediately when opened in a browser.
-Blueprint JSON:
-{json.dumps(blueprint, ensure_ascii=False)}
+Non-negotiable constraints:
+- Single HTML file with embedded <style> and <script>.
+- No external libraries, no script src, no network calls.
+- Must include keyboard + on-screen controls.
+- Must include score and instant feedback.
+Candidate JSON:
+{PASTE_OUTPUT_OF_PROMPT_6}
